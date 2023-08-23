@@ -1,6 +1,7 @@
 import passport from "passport";
 import local from 'passport-local'
 import { UserModel } from "../models/user.model.js";
+import { cartModel } from "../models/cart.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2'
 
@@ -27,7 +28,9 @@ const initializePassport = () => {
                 email: email.toLowerCase(),
                 password: createHash(password)
             }
-            const result = await UserModel.create(userNew)
+            const result = await UserModel.create(userNew)     
+            const userCart = await cartModel.create({_id:JSON.parse(JSON.stringify(result._id))})
+
             return done(null, result)
         } catch (err) {
             return done('error el obtener el user')

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import passport from "passport";
+import { renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController } from "../controllers/view.controller.js";
 
 
 const router = Router();
@@ -12,34 +12,18 @@ const auth = (req, res, next) => {
   return res.status(401).json({ status: 'fail', message: 'Auth error' })
 }
 
-router.get("/products", async (req, res) => {
+router.get("/products", auth, renderProductsController);
 
-  if (req.user.email === 'adminCoder@coder.com' && req.user.password === "adminCod3r123")
-    req.user.rol = 'Admin'
-  else
-    req.user.rol = 'User'
+router.get("/chat", auth, renderChatController)
 
-  res.render('products', {
-    first_name: req.user.first_name,
-    last_name: req.user.last_name,
-    rol: req.user.rol
-  });
-});
+router.get("/session/cart", auth, renderCartController);
 
+router.get("/session/login", renderLoginController)
 
-router.get('/session/failLogin', (req, res) => {
-  res.send({ error: 'Fail login' })
-})
-router.get("/session/login", (req, res) => {
-  res.render('login')
-})
-router.get("/session/register", (req, res) => {
-  res.render('register')
-})
-router.get('/session/failRegister', (req, res) => {
-  res.send({ error: 'Fail register' })
-})
+router.get('/session/failLogin', renderFailLoginController)
 
+router.get("/session/register", renderRegisterController)
 
+router.get('/session/failRegister', renderFailRegisterController)
 
 export default router;

@@ -1,0 +1,67 @@
+<h1 id="tituloCart">Carrito de {{first_name}} {{last_name}}</h1>
+<a href="/products">Product List</a>
+<hr>
+<div id="productsCartUser">
+
+</div>
+
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function cartList() {
+        const id = "{{id}}"
+        const data = await fetch(`http://localhost:8080/api/cart/${id}`)
+        const userCart = (await data.json()).payload
+        console.log(userCart.products)
+        if (userCart.products.length === 0) {
+            document.getElementById('productsCartUser').innerText = "Tu carrito esta vacio"
+        }
+        else {
+            const cartUserDiv = document.getElementById('productsCartUser')
+            userCart.products.forEach(async (product) => {
+                const producto = document.createElement('div')
+                producto.innerHTML = (`
+                                    <span>Cantidad: ${product.quantity}</span>
+                                    <span>Title:${product.product.title}</span>
+                                    <span>Description:${product.product.description}</span>
+                                    <span>Code:${product.product.code}</span>
+                                    <span>Price:${product.product.price}</span>
+                                    <span>Category:${product.product.category}</span>
+                                    <span>Thumbnails:${product.product.thumbnails}</span>
+                                `)
+                botonBorrar = document.createElement('span')
+                botonBorrar.innerHTML = '<button type="button">Borrar</button>';
+                botonBorrar.addEventListener('click', async () => {
+                    let i = userCart.products.indexOf(product)
+                    if (userCart.products[i].quantity == 1) {
+                        userCart.products.splice(i, 1)
+                    }
+                    else {
+                        userCart.products[i].quantity -= 1
+                    }
+                    const res = await fetch(`/api/cart/${userCart._id}`, {
+                        method: "PUT",
+                        body: JSON.stringify(userCart),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+
+                    });
+                    const result = await res.json();
+                    if (result.status === "error")
+                        alert(result.error)
+                    else {
+                        document.getElementById('productsCartUser').innerText = ""
+                        cartList()
+                    }
+                })
+                producto.append(botonBorrar)
+                cartUserDiv.append(producto)
+            })
+        }
+
+    }
+    cartList()
+
+
+</script>

@@ -1,6 +1,6 @@
 <h2>Bienvenido {{rol}}:{{first_name}} {{last_name}}</h2>
 <a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
-
+<a href="session/cart">Carrito</a>
 <h2>Lista de productos</h2>
 <div id="productsDiv">
 
@@ -8,8 +8,9 @@
 
 
 <script type="module">
-    (async () => {
 
+    (async () => {
+        const idUser = "{{id}}"
         const productsDiv = document.getElementById('productsDiv')
         const data = await fetch('/api/products')
         const products = (await data.json()).payload
@@ -25,10 +26,43 @@
                         <p >Category:${product.category}</p>
                         <p >Thumbnails:${product.thumbnails}</p>
                     `)
+            const botonAgregarCart = document.createElement('button')
+            botonAgregarCart.innerText = 'Agregar al carrito ';
+            botonAgregarCart.addEventListener('click', async () => {
+                const resultCart = await fetch(`http://localhost:8080/api/cart/${idUser}`)
+                const dataCart = (await resultCart.json()).payload
+                let change = false
+                for (let i = 0; i < dataCart.products.length; i++) {
+                
+                    if (dataCart.products[i].product._id == product._id) {
+                        dataCart.products[i].quantity += 1
+                        change = true
+
+                    }
+                }
+                if (change == false) {
+                    dataCart.products.push({
+                        product: product._id,
+                        quantity: 1
+                    })
+                }
+                const res = await fetch(`http://localhost:8080/api/cart/${idUser}`, {
+                    method: "PUT",
+                    body: JSON.stringify(dataCart),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+
+                });
+                const result = await res.json();
+                if (result.status === "error")
+                    alert(result.error)
+
+            });
+            producto.append(botonAgregarCart)
             productsDiv.append(producto)
         })
 
-        
     })()
 
 
