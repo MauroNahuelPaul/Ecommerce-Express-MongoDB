@@ -8,11 +8,22 @@ export const renderProductsController = async (req, res) => {
         id: req.user._id,
         first_name: req.user.first_name,
         last_name: req.user.last_name,
-        rol: req.user.rol
+        role: req.user.role
     });
 }
 
-export const renderChatController = async(req,res)=>{
+export const realTimeProductsViewController = (req, res) => {
+
+    res.render('realtimeproducts', {
+        id: req.user._id,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        role: req.user.role
+    });
+}
+
+
+export const renderChatController = async (req, res) => {
     res.render('chat', {
         first_name: req.user.first_name,
         last_name: req.user.last_name,

@@ -12,17 +12,32 @@ import mongoose from "mongoose";
 import passport from "passport";
 import { Server } from 'socket.io'
 import initializePassport from "./config/passport.config.js";
+import { MONGO_DB_NAME, MONGO_URI, PORT, SESSION_SECRET_KEY } from './config/config.js'
 
 const app = express()
 app.use(express.json());
 
 try {
-    const MONGO_URI = 'mongodb+srv://mauro:mauro@ecommerce.wnnj4ej.mongodb.net/'
-    const MONGO_DB_NAME = 'clase19'
-
     await mongoose.connect(MONGO_URI + MONGO_DB_NAME)
+    app.use(session({
+        store: MongoStore.create({
+            mongoUrl: MONGO_URI,
+            dbName: MONGO_DB_NAME,
+            mongoOptions: {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            }
+        }),
+        secret: SESSION_SECRET_KEY,
+        resave: true,
+        saveUninitialized: true
+    }))
 
-    const serverHttp = app.listen(8080, () => console.log("Server Up"))
+    initializePassport()
+    app.use(passport.initialize())
+    app.use(passport.session())
+
+    const serverHttp = app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
     const io = new Server(serverHttp)
     app.set("socketio", io);
 
@@ -33,38 +48,13 @@ try {
     app.set('views', __dirname + "/views")
     app.set('view engine', 'handlebars')
 
-    app.use(session({
-        store: MongoStore.create({
-            mongoUrl: MONGO_URI,
-            dbName: MONGO_DB_NAME,
-            mongoOptions: {
-                useNewUrlParser: true,
-                useUnifiedTopology: true
-            }
-        }),
-        secret: 'pepe',
-        resave: true,
-        saveUninitialized: true
-    }))
 
-    initializePassport()
-    app.use(passport.initialize())
-    app.use(passport.session())
 
     app.use("/", viewsProductsRouter);
-
-    app.use('/api/session',
-        sessionRouter
-    );
-    app.use('/api/chat',
-        chatRouter
-    );
-    app.use("/api/products",
-        productRouter
-    );
-    app.use("/api/cart",
-        cartRouter
-    );
+    app.use('/api/session', sessionRouter);
+    app.use('/api/chat', chatRouter);
+    app.use("/api/products", productRouter);
+    app.use("/api/cart", cartRouter);
 
     io.on('connection', async socket => {
         //Chat

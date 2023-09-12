@@ -1,43 +1,17 @@
 import { Router } from "express";
-import { UserModel } from "../models/user.model.js";
-import { createHash, isValidPassword } from "../utils.js";
 import passport from "passport";
+import {  deleteSessionController, githubController, githubcallbackController, loginUserController, registerUserController } from "../controllers/session.controller.js";
 
 const router = Router();
 
-router.post('/register', passport.authenticate('register', {
-    failureRedirect: '/session/failRegister'
-}), async (req, res) => {
-    res.redirect('/session/login')
-})
+router.post('/register', passport.authenticate('register', { failureRedirect: '/session/failRegister' }), registerUserController)
 
-router.post('/login', passport.authenticate('login', {
-    failureRedirect: '/session/failLogin'
-}), async (req, res) => {
+router.post('/login', passport.authenticate('login', { failureRedirect: '/session/failLogin' }), loginUserController)
 
-    res.redirect('/products')
-})
+router.get('/deletesession', deleteSessionController)
 
-router.get('/deletesession', (req, res) => {
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), githubController)
 
-    req.session.destroy(err => {
-        if (err) {
-            return res.json({ status: 'error', message: 'Ocurrio un error' })
-        }
-        return res.redirect('/session/login')
-
-    })
-
-})
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }),
-    async (req, res) => {
-
-    })
-router.get('/githubcallback', passport.authenticate('github', {
-    failureRedirect: '/login'
-}), async (req, res) => {
-    
-    res.redirect('/products')
-})
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), githubcallbackController)
 
 export default router

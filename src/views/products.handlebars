@@ -1,11 +1,13 @@
-<h2>Bienvenido {{rol}}:{{first_name}} {{last_name}}</h2>
+<h2>Bienvenido a los productos {{role}}:{{first_name}} {{last_name}}</h2>
+<hr/>
 <a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
-<a href="session/cart">Carrito</a>
+    <a href="/products">Product List</a>
+    <a href="/session/cart">Carrito</a>
+    <a href="/chat">Chat</a>
 <h2>Lista de productos</h2>
 <div id="productsDiv">
 
 </div>
-
 
 <script type="module">
 
@@ -17,14 +19,14 @@
         await products.forEach(async (product) => {
             const producto = document.createElement('article')
             producto.innerHTML = (`
-                        <h3 >Title:${product.title}</h3>
-                        <p >Description:${product.description}</p>
-                        <p >Code:${product.code}</p>
-                        <p >Price:${product.price}</p>
-                        <p >Status:${product.status}</p>
-                        <p >Stock:${product.stock}</p>
-                        <p >Category:${product.category}</p>
-                        <p >Thumbnails:${product.thumbnails}</p>
+                        <h3>Title:${product.title}</h3>
+                        <span>Description:${product.description}</span>
+                        <span>Code:${product.code}</span>
+                        <span>Price:${product.price}</span>
+                        <span>Status:${product.status}</span>
+                        <span>Stock:${product.stock}</span>
+                        <span>Category:${product.category}</span>
+                        <span>Thumbnails:${product.thumbnails}</span>
                     `)
             const botonAgregarCart = document.createElement('button')
             botonAgregarCart.innerText = 'Agregar al carrito ';
@@ -64,7 +66,5 @@
         })
 
     })()
-
-
 
 </script>

@@ -4,6 +4,7 @@ import { UserModel } from "../models/user.model.js";
 import { cartModel } from "../models/cart.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2'
+import { CLIENT_SECRET, CLIENT_ID } from './config.js'
 
 const LocalStrategy = local.Strategy
 
@@ -28,8 +29,8 @@ const initializePassport = () => {
                 email: email.toLowerCase(),
                 password: createHash(password)
             }
-            const result = await UserModel.create(userNew)     
-            const userCart = await cartModel.create({_id:JSON.parse(JSON.stringify(result._id))})
+            const result = await UserModel.create(userNew)
+            const userCart = await cartModel.create({ _id: JSON.parse(JSON.stringify(result._id)) })
 
             return done(null, result)
         } catch (err) {
@@ -59,8 +60,8 @@ const initializePassport = () => {
     }))
 
     passport.use('github', new GitHubStrategy({
-        clientID: 'Iv1.813ade5bb783f649',
-        clientSecret: '24102c3c5bf3fcb6a66f0f6d05b203a02f24e09c',
+        clientID: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
         callbackURL: 'http://localhost:8080/api/session/githubcallback'
 
     }, async (accessToken, refreshToken, profile, done) => {
@@ -69,13 +70,13 @@ const initializePassport = () => {
             if (user)
                 return done(null, user)
             const userNew = await UserModel.create({
-                first_name:profile._json.name || profile._json.login,
-                last_name:' ',
-                age:0,
-                email:profile._json.email,
-                password:' '
+                first_name: profile._json.name || profile._json.login,
+                last_name: ' ',
+                age: 0,
+                email: profile._json.email,
+                password: ' '
             })
-            return done(null,userNew)
+            return done(null, userNew)
         } catch (err) {
             return done(`Error to login with GitHub => ${err.message}`)
         }

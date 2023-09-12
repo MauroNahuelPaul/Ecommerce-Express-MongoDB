@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController } from "../controllers/view.controller.js";
+import { realTimeProductsViewController, renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController } from "../controllers/view.controller.js";
+import { handlePolicies } from "../middlewares/auth.middleware.js";
 
 
 const router = Router();
@@ -12,11 +13,12 @@ const auth = (req, res, next) => {
   return res.status(401).json({ status: 'fail', message: 'Auth error' })
 }
 
-router.get("/products", auth, renderProductsController);
+router.get("/products", handlePolicies(["ADMIN", "USER", "PUBLIC"]), renderProductsController);
+router.get("/realtimeproducts", handlePolicies(["ADMIN"]), realTimeProductsViewController)
 
-router.get("/chat", auth, renderChatController)
+router.get("/chat", handlePolicies(["ADMIN", "USER"]), renderChatController)
 
-router.get("/session/cart", auth, renderCartController);
+router.get("/session/cart", handlePolicies(["ADMIN", "USER"]), renderCartController);
 
 router.get("/session/login", renderLoginController)
 

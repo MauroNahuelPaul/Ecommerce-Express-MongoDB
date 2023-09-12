@@ -1,5 +1,6 @@
 import { productModel } from "../models/product.model.js";
 
+
 export const getProductsController = async (req, res) => {
     try {
 

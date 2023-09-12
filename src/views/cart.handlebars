@@ -1,6 +1,11 @@
 <h1 id="tituloCart">Carrito de {{first_name}} {{last_name}}</h1>
+<hr />
+<a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
 <a href="/products">Product List</a>
-<hr>
+<a href="/session/cart">Carrito</a>
+<a href="/chat">Chat</a>
+<button id="terminarCompra">Terminar Compra</button>
+
 <div id="productsCartUser">
 
 </div>
@@ -8,11 +13,21 @@
 <script src="../node_modules/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    const id = "{{id}}"
+    const terminarCompraBoton = document.getElementById("terminarCompra")
+    terminarCompraBoton.addEventListener(('click'), async () => {
+        const res = await fetch(`/api/cart/${id}/purchase`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        document.getElementById('productsCartUser').innerText = ""
+        cartList()
+    })
     async function cartList() {
-        const id = "{{id}}"
+        
         const data = await fetch(`http://localhost:8080/api/cart/${id}`)
         const userCart = (await data.json()).payload
-        console.log(userCart.products)
         if (userCart.products.length === 0) {
             document.getElementById('productsCartUser').innerText = "Tu carrito esta vacio"
         }
