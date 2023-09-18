@@ -21,11 +21,11 @@
                 "Content-Type": "application/json",
             },
         });
-        document.getElementById('productsCartUser').innerText = ""
+        
         cartList()
     })
     async function cartList() {
-        
+        document.getElementById('productsCartUser').innerText = ""
         const data = await fetch(`http://localhost:8080/api/cart/${id}`)
         const userCart = (await data.json()).payload
         if (userCart.products.length === 0) {
@@ -66,7 +66,6 @@
                     if (result.status === "error")
                         alert(result.error)
                     else {
-                        document.getElementById('productsCartUser').innerText = ""
                         cartList()
                     }
                 })

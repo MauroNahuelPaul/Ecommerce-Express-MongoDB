@@ -8,6 +8,7 @@ import productRouter from "./routers/product.router.js"
 import sessionRouter from "./routers/session.router.js"
 import cartRouter from "./routers/cart.router.js"
 import chatRouter from "./routers/chat.router.js"
+import MockRouter from "./routers/mock.router.js"
 import mongoose from "mongoose";
 import passport from "passport";
 import { Server } from 'socket.io'
@@ -55,6 +56,7 @@ try {
     app.use('/api/chat', chatRouter);
     app.use("/api/products", productRouter);
     app.use("/api/cart", cartRouter);
+    app.use("/api/mockingproducts", MockRouter)
 
     io.on('connection', async socket => {
         //Chat
