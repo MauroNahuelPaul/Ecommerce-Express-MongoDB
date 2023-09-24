@@ -9,12 +9,13 @@ import sessionRouter from "./routers/session.router.js"
 import cartRouter from "./routers/cart.router.js"
 import chatRouter from "./routers/chat.router.js"
 import MockRouter from "./routers/mock.router.js"
+import loggerRouter from "./routers/logger.router.js"
 import mongoose from "mongoose";
 import passport from "passport";
 import { Server } from 'socket.io'
 import initializePassport from "./config/passport.config.js";
 import { MONGO_DB_NAME, MONGO_URI, PORT, SESSION_SECRET_KEY } from './config/config.js'
-
+import { logger } from "./utils.js";
 const app = express()
 app.use(express.json());
 
@@ -38,7 +39,7 @@ try {
     app.use(passport.initialize())
     app.use(passport.session())
 
-    const serverHttp = app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+    const serverHttp = app.listen(PORT, () => logger.info(`Listening on port ${PORT}`))
     const io = new Server(serverHttp)
     app.set("socketio", io);
 
@@ -52,6 +53,7 @@ try {
 
 
     app.use("/", viewsProductsRouter);
+    app.use("/loggerTest", loggerRouter)
     app.use('/api/session', sessionRouter);
     app.use('/api/chat', chatRouter);
     app.use("/api/products", productRouter);

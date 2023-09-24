@@ -11,4 +11,5 @@ export const SESSION_SECRET_KEY = process.env.SESSION_SECRET_KEY
 
 export const PORT = process.env.PORT
 
+export const ENVIRONMENT = process.env.ENVIRONMENT
 export const PERSISTENCE = process.env.PERSISTENCE
