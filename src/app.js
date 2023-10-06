@@ -2,7 +2,16 @@ import express from "express";
 import session from "express-session";
 import MongoStore from 'connect-mongo'
 import handlebars from 'express-handlebars'
-import __dirname from "./utils.js";
+import mongoose from "mongoose";
+import passport from "passport";
+import { Server } from 'socket.io'
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress   from "swagger-ui-express";
+
+import initializePassport from "./config/passport.config.js";
+import { MONGO_DB_NAME, MONGO_URI, PORT, SESSION_SECRET_KEY } from './config/config.js'
+import { logger, __dirname } from "./utils.js";
+
 import viewsProductsRouter from "./routers/views.router.js";
 import productRouter from "./routers/product.router.js"
 import sessionRouter from "./routers/session.router.js"
@@ -10,12 +19,7 @@ import cartRouter from "./routers/cart.router.js"
 import chatRouter from "./routers/chat.router.js"
 import MockRouter from "./routers/mock.router.js"
 import loggerRouter from "./routers/logger.router.js"
-import mongoose from "mongoose";
-import passport from "passport";
-import { Server } from 'socket.io'
-import initializePassport from "./config/passport.config.js";
-import { MONGO_DB_NAME, MONGO_URI, PORT, SESSION_SECRET_KEY } from './config/config.js'
-import { logger } from "./utils.js";
+
 const app = express()
 app.use(express.json());
 
@@ -35,6 +39,19 @@ try {
         saveUninitialized: true
     }))
 
+    const swaggerOptions ={
+        definition:{
+            openapi:'3.0.1',
+            info:{
+                title:'Documentación del Ecommerce',
+                description:'Todas las funcionalidades'
+            }
+        },
+        apis:['./docs/**/*.yaml']
+    }
+    const specs = swaggerJSDoc(swaggerOptions)
+    app.use('/docs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))
+
     initializePassport()
     app.use(passport.initialize())
     app.use(passport.session())
@@ -51,13 +68,12 @@ try {
     app.set('view engine', 'handlebars')
 
 
-
     app.use("/", viewsProductsRouter);
     app.use("/loggerTest", loggerRouter)
-    app.use('/api/session', sessionRouter);
-    app.use('/api/chat', chatRouter);
     app.use("/api/products", productRouter);
     app.use("/api/cart", cartRouter);
+    app.use('/api/session', sessionRouter);
+    app.use('/api/chat', chatRouter);
     app.use("/api/mockingproducts", MockRouter)
 
     io.on('connection', async socket => {

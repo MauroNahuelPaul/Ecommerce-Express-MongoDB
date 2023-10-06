@@ -1,5 +1,3 @@
-
-
 export const registerUserController = async (req, res) => {
     res.redirect('/session/login')
 }

@@ -1,0 +1,137 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        "200":
+          descrption: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    
+    post:
+      summary: Create a new product
+      tags: 
+      - Products
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  
+  /api/products/{productId}:
+    get:
+      tags: 
+        - Products
+      summary: Get a product by ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    
+    put:
+      tags: 
+        - Products
+      summary: Update a product by ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    
+    delete:
+      tags: 
+        - Products
+      summary: Delete a product by ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        code: 
+          type: string
+        price:
+          type: number
+        status:
+          type: boolean
+        stock: 
+          type: number
+        category:
+          type: string
+        thumbnails:
+          type: string
+      required:
+        - title
+        - description
+        - code
+        - price
+        - status
+        - stock
+        - category
+  securitySchemes:
+    bearAuth:
+      type: http
+      scheme: bearer
