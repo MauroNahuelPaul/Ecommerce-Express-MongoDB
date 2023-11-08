@@ -14,11 +14,13 @@ import { logger, __dirname } from "./utils.js";
 
 import viewsProductsRouter from "./routers/views.router.js";
 import productRouter from "./routers/product.router.js"
+import userRouter from "./routers/user.router.js"
 import sessionRouter from "./routers/session.router.js"
 import cartRouter from "./routers/cart.router.js"
 import chatRouter from "./routers/chat.router.js"
 import MockRouter from "./routers/mock.router.js"
 import loggerRouter from "./routers/logger.router.js"
+
 
 const app = express()
 app.use(express.json());
@@ -73,6 +75,7 @@ try {
     app.use("/api/products", productRouter);
     app.use("/api/cart", cartRouter);
     app.use('/api/session', sessionRouter);
+    app.use('/api/users', userRouter);
     app.use('/api/chat', chatRouter);
     app.use("/api/mockingproducts", MockRouter)
 

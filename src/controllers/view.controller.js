@@ -1,9 +1,4 @@
 export const renderProductsController = async (req, res) => {
-
-    if (req.user.email === 'adminCoder@coder.com' && req.user.password === "adminCod3r123")
-        req.user.rol = 'Admin'
-    else
-        req.user.rol = 'User'
     res.render('products', {
         id: req.user._id,
         first_name: req.user.first_name,
@@ -28,6 +23,15 @@ export const renderChatController = async (req, res) => {
         first_name: req.user.first_name,
         last_name: req.user.last_name,
     });
+}
+
+export const usersViewController = async (req, res) => {
+    res.render('users', {
+        id: req.user._id,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        role: req.user.role
+    })
 }
 
 export const renderCartController = async (req, res) => {

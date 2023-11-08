@@ -1,0 +1,60 @@
+<h2>Bienvenido a la gentión de usuarios {{role}}:{{first_name}} {{last_name}}</h2>
+<hr />
+<a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
+<a href="/products">Product List</a>
+<a href="/session/cart">Carrito</a>
+<a href="/chat">Chat</a>
+<h2>Lista de usuarios</h2>
+<div id="usersDiv">
+
+</div>
+
+<script type="module">
+
+
+    (async () => {
+        const usersDiv = document.getElementById('usersDiv')
+        const data = await fetch('/api/users/detail')
+        const users = (await data.json()).payload
+        await users.forEach(async (user) => {
+            const usuario = document.createElement('article')
+            usuario.innerHTML = (`
+                        <h3>Nombre:${user.full_name}</h3>
+                        <span>Email:${user.email}</span>
+                        <label for="role">Rol:</label>
+                    `)
+            const roleChange = document.createElement('select')
+            roleChange.setAttribute("name", "role")
+            roleChange.setAttribute("id", "role")
+            if (user.role == 'user') {
+                roleChange.innerHTML = (`
+                    <option value="admin">Admin</option>
+                    <option value="user" selected="selected">User</option>           
+            `)
+            }
+            else {
+                roleChange.innerHTML = (`
+                    <option value="admin" selected="selected">Admin</option>
+                    <option value="user">User</option>
+            `)
+            }
+            roleChange.addEventListener('change', async () => {
+                const selectValue = document.getElementById("role")
+                const res = await fetch(`http://localhost:8080/api/users/${user._id}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ role: selectValue.value }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+
+                });
+
+            })
+            usuario.append(roleChange)
+            usersDiv.append(usuario)
+
+        })
+
+    })()
+
+</script>

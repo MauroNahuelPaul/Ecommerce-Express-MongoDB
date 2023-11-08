@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, default: "user" }
+    role: { type: String, default: "user" },
+    last_time_login: { type: Date }
 })
 
 mongoose.set("strictQuery", false);

@@ -5,6 +5,7 @@ import { cartModel } from "../models/cart.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2'
 import { CLIENT_SECRET, CLIENT_ID } from './config.js'
+import { UserService } from "../services/index.js";
 
 const LocalStrategy = local.Strategy
 
@@ -52,7 +53,7 @@ const initializePassport = () => {
             if (!isValidPassword(user, password)) {
                 return done(null, false)
             }
-
+            UserService.update(user._id, { "last_time_login": Date.now() })
             return done(null, user)
         } catch (err) {
 
@@ -67,14 +68,17 @@ const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const user = await UserModel.findOne({ email: profile._json.email })
-            if (user)
+            if (user) {
+                UserService.update(user._id, { "last_time_login": Date.now() })
                 return done(null, user)
+            }
             const userNew = await UserModel.create({
                 first_name: profile._json.name || profile._json.login,
                 last_name: ' ',
                 age: 0,
                 email: profile._json.email,
-                password: ' '
+                password: ' ',
+                last_time_login: Date.now()
             })
             return done(null, userNew)
         } catch (err) {

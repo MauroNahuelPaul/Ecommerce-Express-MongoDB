@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { realTimeProductsViewController, renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController } from "../controllers/view.controller.js";
+import { realTimeProductsViewController, renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController, usersViewController } from "../controllers/view.controller.js";
 import { handlePolicies } from "../middlewares/auth.middleware.js";
 
 
@@ -17,6 +17,8 @@ router.get("/products", handlePolicies(["ADMIN", "USER", "PUBLIC"]), renderProdu
 router.get("/realtimeproducts", handlePolicies(["ADMIN"]), realTimeProductsViewController)
 
 router.get("/chat", handlePolicies(["ADMIN", "USER"]), renderChatController)
+
+router.get("/users",handlePolicies(["ADMIN"]), usersViewController)
 
 router.get("/session/cart", handlePolicies(["ADMIN", "USER"]), renderCartController);
 
