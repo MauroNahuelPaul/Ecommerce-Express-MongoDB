@@ -16,6 +16,8 @@
         const productsDiv = document.getElementById('productsDiv')
         const data = await fetch('/api/products')
         const products = (await data.json()).payload
+        if(products==[])
+            productsDiv.innerText= ("Todavía no existen productos")
         await products.forEach(async (product) => {
             const producto = document.createElement('article')
             producto.innerHTML = (`
@@ -31,7 +33,7 @@
             const botonAgregarCart = document.createElement('button')
             botonAgregarCart.innerText = 'Agregar al carrito ';
             botonAgregarCart.addEventListener('click', async () => {
-                const resultCart = await fetch(`http://localhost:8080/api/cart/${idUser}`)
+                const resultCart = await fetch(`/api/cart/${idUser}`)
                 const dataCart = (await resultCart.json()).payload
                 let change = false
                 for (let i = 0; i < dataCart.products.length; i++) {
@@ -48,7 +50,7 @@
                         quantity: 1
                     })
                 }
-                const res = await fetch(`http://localhost:8080/api/cart/${idUser}`, {
+                const res = await fetch(`/api/cart/${idUser}`, {
                     method: "PUT",
                     body: JSON.stringify(dataCart),
                     headers: {

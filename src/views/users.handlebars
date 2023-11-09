@@ -19,24 +19,36 @@
         await users.forEach(async (user) => {
             const usuario = document.createElement('article')
             usuario.innerHTML = (`
-                        <h3>Nombre:${user.full_name}</h3>
+                        <h3>Nombre:${user.first_name} ${user.last_name}</h3>
                         <span>Email:${user.email}</span>
                         <label for="role">Rol:</label>
                     `)
             const roleChange = document.createElement('select')
             roleChange.setAttribute("name", "role")
             roleChange.setAttribute("id", "role")
-            if (user.role == 'user') {
-                roleChange.innerHTML = (`
-                    <option value="admin">Admin</option>
-                    <option value="user" selected="selected">User</option>           
-            `)
-            }
-            else {
-                roleChange.innerHTML = (`
-                    <option value="admin" selected="selected">Admin</option>
-                    <option value="user">User</option>
-            `)
+            switch (user.role) {
+                case "user":
+                    roleChange.innerHTML = (`
+                        <option value="admin">Admin</option>
+                        <option value="premium">Premium</option>  
+                        <option value="user" selected="selected">User</option>           
+                    `)
+                    break
+                case "premium":
+                    roleChange.innerHTML = (`
+                        <option value="admin">Admin</option>
+                        <option value="premium" selected="selected">Premium</option>  
+                        <option value="user">User</option>           
+                    `)
+                    break
+                case "admin":
+                    roleChange.innerHTML = (`
+                        <option value="admin" selected="selected">Admin</option>
+                        <option value="premium">Premium</option> 
+                        <option value="user">User</option>
+                    `)
+                    break
+            
             }
             roleChange.addEventListener('change', async () => {
                 const selectValue = document.getElementById("role")
@@ -50,7 +62,19 @@
                 });
 
             })
+            const deleteUserButton = document.createElement('button')
+            deleteUserButton.setAttribute('id', 'deleteUserButton')
+            deleteUserButton.innerText = ("Borrar usuario")
+            deleteUserButton.addEventListener('click', async () => {
+                const res = await fetch(`http://localhost:8080/api/users/${user._id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+            })
             usuario.append(roleChange)
+            usuario.append(deleteUserButton)
             usersDiv.append(usuario)
 
         })

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import nodemailer from 'nodemailer'
 dotenv.config()
 
 export const MONGO_URI = process.env.MONGO_URI 
@@ -13,3 +14,12 @@ export const PORT = process.env.PORT
 
 export const ENVIRONMENT = process.env.ENVIRONMENT
 export const PERSISTENCE = process.env.PERSISTENCE
+
+let config = {
+    service: 'gmail',
+    auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS
+    }
+}
+export const transporter = nodemailer.createTransport(config)

@@ -1,5 +1,8 @@
-import { ProductService } from "../services/index.js";
+import { ProductService, UserService } from "../services/index.js";
 import CustomError from "../services/errors/custom_error.js";
+import { generateProductErrorInfo } from '../services/errors/info.js'
+import { transporter } from "../config/config.js";
+import EErrors from "../services/errors/enums.js";
 
 export const getProductParams = async (req, res) => {
     try {
@@ -50,6 +53,7 @@ export const getProductParams = async (req, res) => {
             hasNextPage,
             prevLink,
             nextLink,
+            totalCount
         })
     } catch (err) {
         res.status(500).json({ status: "error", error: err.message });
@@ -83,7 +87,7 @@ export const getProductsIdController = async (req, res) => {
 export const createProductController = async (req, res) => {
     try {
         const product = req.body;
-        if (!product.title || !product.description || !product.price || !product.code || !product.status || !product.stock || !product.category) {
+        if (!product.title || !product.description || !product.price || !product.code || !product.stock || !product.category) {
             return CustomError.createError({
                 name: "Product creation error",
                 cause: generateProductErrorInfo(product),
@@ -116,8 +120,19 @@ export const deleteProductController = async (req, res) => {
     try {
         const id = req.params.pid
         const result = await ProductService.delete(id)
+        const user = await UserService.getById(result.idUserCreator)
+
         if (result === null) {
             return res.status(404).json({ status: 'error', error: 'not found' })
+        }
+        if (user.role = "premium") {
+            let message = {
+                from: process.env.NODEMAILER_USER,
+                to: user.email,
+                subject: 'Aviso de eliminacion de producto',
+                html: `Se ha eliminado el producto ${result.title} de forma permanente`
+            }
+            await transporter.sendMail(message)
         }
         res.json({ status: 'success', payload: result })
     } catch (err) {

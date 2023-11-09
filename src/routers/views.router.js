@@ -13,14 +13,14 @@ const auth = (req, res, next) => {
   return res.status(401).json({ status: 'fail', message: 'Auth error' })
 }
 
-router.get("/products", handlePolicies(["ADMIN", "USER", "PUBLIC"]), renderProductsController);
-router.get("/realtimeproducts", handlePolicies(["ADMIN"]), realTimeProductsViewController)
+router.get("/products", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderProductsController);
+router.get("/realtimeproducts", handlePolicies(["ADMIN", "PREMIUM"]), realTimeProductsViewController)
 
-router.get("/chat", handlePolicies(["ADMIN", "USER"]), renderChatController)
+router.get("/chat", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderChatController)
 
-router.get("/users",handlePolicies(["ADMIN"]), usersViewController)
+router.get("/users", handlePolicies(["ADMIN"]), usersViewController)
 
-router.get("/session/cart", handlePolicies(["ADMIN", "USER"]), renderCartController);
+router.get("/session/cart", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderCartController);
 
 router.get("/session/login", renderLoginController)
 

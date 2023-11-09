@@ -1,6 +1,7 @@
+import { transporter } from '../config/config.js'
 import userDTO from '../dto/user.dto.js'
 import { UserService } from '../services/index.js'
-import nodemailer from 'nodemailer'
+
 
 export const getUserController = async (req, res) => {
     try {
@@ -48,14 +49,6 @@ export const editUserIdController = async (req, res) => {
 }
 export const deteleUserTimeController = async (req, res) => {
     try {
-        let config = {
-            service: 'gmail',
-            auth: {
-                user: process.env.NODEMAILER_USER,
-                pass: process.env.NODEMAILER_PASS
-            }
-        }
-        let transporter = nodemailer.createTransport(config)
         let cantidadUserBorrados = 0
         const users = await UserService.getAll()
         users.map(async (user) => {
@@ -75,6 +68,18 @@ export const deteleUserTimeController = async (req, res) => {
             }
         })
         res.json({ status: 'success', message: `Se han borrado ${cantidadUserBorrados}` })
+    } catch (err) {
+        return res.status(500).json({ status: 'error', error: err.message })
+    }
+}
+export const deleteUserController = async (req, res) => {
+    try {
+        const id = req.params.uid
+        const result = await UserService.delete(id)
+        if (result === null) {
+            return res.status(404).json({ status: 'error', error: 'not found' })
+        }
+        res.json({ status: 'success', payload: result })
     } catch (err) {
         return res.status(500).json({ status: 'error', error: err.message })
     }

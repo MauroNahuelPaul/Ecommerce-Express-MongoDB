@@ -53,6 +53,7 @@ const initializePassport = () => {
             if (!isValidPassword(user, password)) {
                 return done(null, false)
             }
+            
             UserService.update(user._id, { "last_time_login": Date.now() })
             return done(null, user)
         } catch (err) {
@@ -80,6 +81,7 @@ const initializePassport = () => {
                 password: ' ',
                 last_time_login: Date.now()
             })
+            const userCart = await cartModel.create({ _id: JSON.parse(JSON.stringify(userNew._id)) })
             return done(null, userNew)
         } catch (err) {
             return done(`Error to login with GitHub => ${err.message}`)
