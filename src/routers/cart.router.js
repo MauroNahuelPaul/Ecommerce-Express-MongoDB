@@ -11,7 +11,7 @@ router.get('/', getCartController)
 
 router.get('/:cid', getCartIdController)
 
-router.get('/:cid/purchase',getCartIdPurchaseController)
+router.get('/:cid/purchase', getCartIdPurchaseController)
 
 router.put('/:cid', editCartIdController)
 

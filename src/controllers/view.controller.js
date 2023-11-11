@@ -43,6 +43,25 @@ export const renderCartController = async (req, res) => {
     });
 }
 
+export const renderPurchaseController = async (req, res) => {
+
+    res.render('purchase', {
+        idPurchase: req.params.tid,
+        role: req.user.role,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+    });
+}
+export const renderPurchaseListController = async (req, res) => {
+
+    res.render('purchaseList', {
+    
+        role: req.user.role,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+    });
+}
+
 export const renderLoginController = (req, res) => {
     res.render('login')
 }

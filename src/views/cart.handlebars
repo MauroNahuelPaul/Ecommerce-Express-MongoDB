@@ -1,8 +1,9 @@
 <h1 id="tituloCart">Carrito de {{first_name}} {{last_name}}</h1>
 <hr />
 <a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
-<a href="/products">Product List</a>
-<a href="/session/cart">Carrito</a>
+<a href="/products">Lista de productos</a>
+<a href="/session/cart">Lista de compras</a>
+<a href="/purchaseList">Mis Reservas</a>
 <a href="/chat">Chat</a>
 <button id="terminarCompra">Terminar Compra</button>
 
@@ -13,25 +14,28 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const id = "{{id}}"
-    const terminarCompraBoton = document.getElementById("terminarCompra")
-    terminarCompraBoton.addEventListener(('click'), async () => {
-        const res = await fetch(`/api/cart/${id}/purchase`, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        document.location.href
-        
-        cartList()
-    })
+
     async function cartList() {
         document.getElementById('productsCartUser').innerText = ""
-        const data = await fetch(`http://localhost:8080/api/cart/${id}`)
+        const data = await fetch(`/api/cart/${id}`)
         const userCart = (await data.json()).payload
         if (userCart.products.length === 0) {
             document.getElementById('productsCartUser').innerText = "Tu carrito esta vacio"
         }
         else {
+
+            const terminarCompraBoton = document.getElementById("terminarCompra")
+            terminarCompraBoton.addEventListener(('click'), async () => {
+                const res = await fetch(`/api/cart/${id}/purchase`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                await res.json().then((result) => {
+                    window.location.href = `/purchase/${(result.payload)._id}`
+                })
+            })
+
             const cartUserDiv = document.getElementById('productsCartUser')
             userCart.products.forEach(async (product) => {
                 const producto = document.createElement('div')

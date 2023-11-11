@@ -1,8 +1,9 @@
 <h1 class="">Bienvenidos al realtimeproducts {{role}}:{{first_name}} {{last_name}}</h1>
 <hr />
 <a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
-<a href="/products">Product List</a>
-<a href="/session/cart">Carrito</a>
+<a href="/products">Lista de productos</a>
+<a href="/session/cart">Lista de compras</a>
+<a href="/purchaseList">Mis Reservas</a>
 <a href="/chat">Chat</a>
 
 <div class="" id="productsDiv">
@@ -23,7 +24,7 @@
 <script>
     const idUser = "{{id}}"
     async function productList() {
-        document.getElementById('productsDiv').innerText = ""
+        document.getElementById('productsDiv').innerHTML = ''
         const productsDiv = document.getElementById('productsDiv')
         const data = await fetch('/api/products')
         const products = (await data.json()).payload
@@ -70,7 +71,14 @@
             let stock = document.getElementById('stock').value
             let category = document.getElementById('category').value
             let idUserCreator = idUser
-            document.getElementById('productsDiv').innerHTML = ''
+            
+            document.getElementById('title').value = ''
+            document.getElementById('description').value = ''
+            document.getElementById('code').value = ''
+            document.getElementById('price').value = ''
+            document.getElementById('status').value = false
+            document.getElementById('stock').value = ''
+            document.getElementById('category').value = ''
             let newProduct = { title, description, code, price, status, stock, category, idUserCreator }
             const res = await fetch('/api/products', {
                 method: "POST",
@@ -79,13 +87,7 @@
                     "Content-Type": "application/json",
                 },
             });
-            document.getElementById('title').value = ''
-            document.getElementById('description').value = ''
-            document.getElementById('code').value = ''
-            document.getElementById('price').value = ''
-            document.getElementById('status').value = false
-            document.getElementById('stock').value = ''
-            document.getElementById('category').value = ''
+            
             productList()
         })
 

@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 import { Server } from 'socket.io'
 import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUiExpress   from "swagger-ui-express";
+import swaggerUiExpress from "swagger-ui-express";
 
 import initializePassport from "./config/passport.config.js";
 import { MONGO_DB_NAME, MONGO_URI, PORT, SESSION_SECRET_KEY } from './config/config.js'
@@ -20,6 +20,7 @@ import cartRouter from "./routers/cart.router.js"
 import chatRouter from "./routers/chat.router.js"
 import MockRouter from "./routers/mock.router.js"
 import loggerRouter from "./routers/logger.router.js"
+import purcharseRouter from "./routers/purchase.router.js"
 
 
 const app = express()
@@ -41,18 +42,18 @@ try {
         saveUninitialized: true
     }))
 
-    const swaggerOptions ={
-        definition:{
-            openapi:'3.0.1',
-            info:{
-                title:'Documentación del Ecommerce',
-                description:'Todas las funcionalidades'
+    const swaggerOptions = {
+        definition: {
+            openapi: '3.0.1',
+            info: {
+                title: 'Documentación del Ecommerce',
+                description: 'Todas las funcionalidades'
             }
         },
-        apis:['./docs/**/*.yaml']
+        apis: ['./docs/**/*.yaml']
     }
     const specs = swaggerJSDoc(swaggerOptions)
-    app.use('/docs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))
+    app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
     initializePassport()
     app.use(passport.initialize())
@@ -77,7 +78,8 @@ try {
     app.use('/api/session', sessionRouter);
     app.use('/api/users', userRouter);
     app.use('/api/chat', chatRouter);
-    app.use("/api/mockingproducts", MockRouter)
+    app.use('/api/purchase', purcharseRouter);
+    app.use('/api/mockingproducts', MockRouter)
 
     io.on('connection', async socket => {
         //Chat

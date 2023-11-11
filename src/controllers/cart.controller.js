@@ -80,8 +80,8 @@ export const getCartIdPurchaseController = async (req, res) => {
                 purchaser: req.user.email,
                 products: productosAprobados
             })
-            
-            CartService.update(cart._id, {"products":productosDesaprobados})
+
+            CartService.update(cart._id, { "products": productosDesaprobados })
 
             res.status(200).json({ status: "success", payload: result });
         } else {

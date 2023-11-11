@@ -1,0 +1,44 @@
+<h2>Bienvenido a tu recibo de compra {{role}}: {{first_name}} {{last_name}}</h2>
+<h3>Identificador de compra: {{idPurchase}}</h3>
+<h3 id="fechaCompra"></h3>
+<hr />
+<a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
+<a href="/products">Lista de productos</a>
+<a href="/session/cart">Lista de productos</a>
+<a href="/purchaseList">Mis Reservas</a>
+<a href="/chat">Chat</a>
+<h2>Productos:</h2>
+<div id="datosDiv">
+
+</div>
+
+<script type="module">
+    (async () => {
+        const idPurchase = "{{idPurchase}}"
+        const datosPurchaseDiv = document.getElementById('datosDiv')
+        const res = await fetch(`/api/purchase/${idPurchase}`)
+        const data = (await res.json()).payload
+
+        const fechaCompra = document.getElementById('fechaCompra')
+        fechaCompra.innerText= `Fecha: ${data.purchase_datetime}`
+
+        data.products.forEach(async (product) => {
+            const producto = document.createElement('div')
+            producto.innerHTML = (`
+                <span>Cantidad: ${product.quantity}</span>
+                <span>Title:${product.product.title}</span>
+                <span>Description:${product.product.description}</span>
+                <span>Code:${product.product.code}</span>
+                <span>Price:${product.product.price}</span>
+                <span>Category:${product.product.category}</span>
+            `)
+
+            datosPurchaseDiv.append(producto)
+
+        })
+        const total = document.createElement('h2')
+        total.innerText = `Total: ${data.amount}`
+        datosPurchaseDiv.append(total)
+    })()
+
+</script>

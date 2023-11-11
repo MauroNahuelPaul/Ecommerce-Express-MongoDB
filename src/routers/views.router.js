@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { realTimeProductsViewController, renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderRegisterController, usersViewController } from "../controllers/view.controller.js";
+import { realTimeProductsViewController, renderCartController, renderChatController, renderFailLoginController, renderFailRegisterController, renderLoginController, renderProductsController, renderPurchaseController, renderPurchaseListController, renderRegisterController, usersViewController } from "../controllers/view.controller.js";
 import { handlePolicies } from "../middlewares/auth.middleware.js";
 
 
@@ -21,6 +21,10 @@ router.get("/chat", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderChatCont
 router.get("/users", handlePolicies(["ADMIN"]), usersViewController)
 
 router.get("/session/cart", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderCartController);
+
+router.get("/purchase/:tid", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderPurchaseController)
+
+router.get("/purchaseList", handlePolicies(["ADMIN", "PREMIUM", "USER"]), renderPurchaseListController)
 
 router.get("/session/login", renderLoginController)
 

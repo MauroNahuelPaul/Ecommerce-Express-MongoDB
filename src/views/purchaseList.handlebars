@@ -1,0 +1,33 @@
+<h1>Mis reservas</h1>
+<hr />
+<a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
+<a href="/products">Lista de productos</a>
+<a href="/session/cart">Lista de compras</a>
+<a href="/purchaseList">Mis Reservas</a>
+<a href="/chat">Chat</a>
+
+<div id="purchaseDiv">
+
+</div>
+
+<script>
+    (async () => {
+        const purchaseDiv = document.getElementById('purchaseDiv')
+        const data = await fetch('/api/purchase')
+        const reservas = (await data.json()).payload
+        if (reservas == [])
+            purchaseDiv.innerText = ("Todavía no existen reservas")
+        console.log(reservas)
+        await reservas.forEach(async (reserva) => {
+            const reservaArt = document.createElement('article')
+            reservaArt.innerHTML = (`
+                        <h3>Identificador de reserva: ${reserva._id}</h3>
+                        <span>Monto: ${reserva.amount}</span>
+                        <span>Fecha: ${reserva.purchase_datetime}</span>
+                        <a href="/purchase/${reserva._id}">Ver detalle</a>
+                    `)
+            purchaseDiv.append(reservaArt)
+        })
+
+    })()
+</script>

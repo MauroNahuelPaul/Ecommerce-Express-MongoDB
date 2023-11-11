@@ -1,9 +1,10 @@
 <h2>Bienvenido a los productos {{role}}:{{first_name}} {{last_name}}</h2>
-<hr/>
+<hr />
 <a href="/api/session/deletesession" id="logout">Cerrar sesión</a>
-    <a href="/products">Product List</a>
-    <a href="/session/cart">Carrito</a>
-    <a href="/chat">Chat</a>
+<a href="/products">Lista de productos</a>
+<a href="/session/cart">Lista de compras</a>
+<a href="/purchaseList">Mis Reservas</a>
+<a href="/chat">Chat</a>
 <h2>Lista de productos</h2>
 <div id="productsDiv">
 
@@ -16,8 +17,8 @@
         const productsDiv = document.getElementById('productsDiv')
         const data = await fetch('/api/products')
         const products = (await data.json()).payload
-        if(products==[])
-            productsDiv.innerText= ("Todavía no existen productos")
+        if (products == [])
+            productsDiv.innerText = ("Todavía no existen productos")
         await products.forEach(async (product) => {
             const producto = document.createElement('article')
             producto.innerHTML = (`
@@ -37,7 +38,7 @@
                 const dataCart = (await resultCart.json()).payload
                 let change = false
                 for (let i = 0; i < dataCart.products.length; i++) {
-                
+
                     if (dataCart.products[i].product._id == product._id) {
                         dataCart.products[i].quantity += 1
                         change = true

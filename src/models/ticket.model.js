@@ -18,6 +18,8 @@ const ticketSchema = new mongoose.Schema({
         default: []
     }
 })
-
+ticketSchema.pre("findOne", function () {
+    this.populate("products.product")
+})
 mongoose.set("strictQuery", false);
 export const ticketModel = mongoose.model(ticketCollection, ticketSchema)
